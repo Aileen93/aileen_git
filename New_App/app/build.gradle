@@ -1,0 +1,47 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.1"
+    defaultConfig {
+        // applicationId "com.example.n3815.new_app"
+        minSdkVersion 14
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets{
+        main{
+            res.srcDirs = [
+                    '/src/main/res/layout/list',
+                    '/src/main/res/layout',
+                    '/src/main/res'
+            ]
+        }
+    }
+    dexOptions{
+        javaMaxHeapSize = "4g"
+    }
+
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:support-v4:24.0.1' // 뷰
+    compile files('libs/converter-simplexml-2.1.0.jar') // xml
+    compile files('libs/javawriter-2.1.1.jar')
+    compile files('libs/okhttp-3.5.0.jar') // http
+    compile files('libs/okio-1.9.0.jar') // okio
+    compile files('libs/picasso-2.5.2.jar') // 이미지 변환 lib
+    compile files('libs/retrofit-2.1.0.jar') // Retrofit
+    compile files('libs/simple-xml-2.7.1.jar') // simple xml
+}

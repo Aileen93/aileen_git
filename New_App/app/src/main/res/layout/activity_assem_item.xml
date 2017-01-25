@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:descendantFocusability="blocksDescendants"
+    android:baselineAligned="false"
+    android:id="@+id/selected">
+
+    <TextView
+        android:id="@+id/color"
+        android:layout_height="60dp"
+        android:layout_gravity="left"
+        android:background="@android:color/darker_gray"
+        android:layout_width="8dp" />
+
+    <!-- 프로필 사진 -->
+    <LinearLayout
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/color"
+        android:orientation="vertical">
+
+        <ImageView
+        android:id="@+id/assem_empImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <!-- 내용 -->
+    <LinearLayout
+        android:layout_height="60dp"
+        android:layout_width="180dp"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/assem_empImg"
+        android:orientation="vertical">
+
+        <!-- 이름과 소속당 -->
+        <LinearLayout
+            android:layout_toRightOf="@+id/assem_empImg"
+            android:orientation="horizontal"
+            android:layout_width="180dp"
+            android:layout_height="30dp">
+
+            <TextView
+                android:id="@+id/assem_empNm"
+                android:layout_gravity="top"
+                android:textSize="12sp"
+                android:textStyle="normal|bold"
+                android:layout_width="50dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:id="@+id/assem_dang"
+                android:layout_gravity="top"
+                android:textSize="12sp"
+                android:textStyle="normal|bold"
+                android:layout_width="120dp"
+                android:layout_height="30dp"
+                android:text="　"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/assem_origNm"
+            android:layout_gravity="bottom"
+            android:textSize="12sp"
+            android:layout_marginTop="5dp"
+            android:textStyle="normal|bold"
+            android:textAlignment="center"
+            android:layout_height="25dp"
+            android:layout_width="180dp" />
+
+    </LinearLayout>
+
+    <!-- 즐겨찾기 -->
+    <LinearLayout
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="3dp"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <CheckBox
+            android:id="@+id/favorite"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+
+    </LinearLayout>
+</LinearLayout>
