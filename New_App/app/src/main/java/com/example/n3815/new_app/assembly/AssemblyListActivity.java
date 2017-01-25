@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -58,6 +61,7 @@ public class AssemblyListActivity extends MainActivity{
         adapter = new AssemblyListAdapter();
 
         listview = (ListView) findViewById(R.id.assembly_listView);
+        listview.setAdapter(adapter);
 
         // 전체 국회의원 리스트 가져오기
         try {
@@ -105,7 +109,24 @@ public class AssemblyListActivity extends MainActivity{
             }
         });
 
-        listview.setAdapter(adapter);
+        /* Error 납니다. 왜죠? Null 이라는데, 해당 버튼이 없어서 그런가.
+
+        CheckBox favoriteBtn = (CheckBox) findViewById(R.id.favorite);
+        favoriteBtn.setOnClickListener(new CheckBox.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               SparseBooleanArray checkedItems = listview.getCheckedItemPositions();
+               int count = adapter.getCount() ;
+
+               for (int i = count-1; i >= 0; i--) {
+                   if (checkedItems.get(i)) {
+                       Log.v("===mainActivity===",""+checkedItems.get(i));
+                   }
+               }
+               // 모든 선택 상태 초기화.
+               listview.clearChoices() ;
+           }
+        });*/
     }
 
     /**

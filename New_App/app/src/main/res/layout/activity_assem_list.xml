@@ -16,6 +16,7 @@
         android:id="@+id/assembly_listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:fastScrollEnabled="true"/>
 
 </LinearLayout>
