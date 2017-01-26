@@ -1,6 +1,9 @@
 package com.example.n3815.new_app.common.bean;
 
 import android.graphics.drawable.Drawable;
+
+import com.example.n3815.new_app.common.SearchCommon;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -38,6 +41,8 @@ public class AssemBean {
     private Drawable img_profile;   // 프로필 사진
 
     private boolean favorite = false; // 즐겨찾기 등록여부
+
+    private String initial; // 이름의 첫글자 초성
 
     public String getDeptCd(){
         return this.deptCd;
@@ -95,6 +100,11 @@ public class AssemBean {
         this.jpgLink = jpgLink;
     }
 
+    // 초성 가져오기
+    public String getInitial(){
+        return String.valueOf(SearchCommon.getInitialSound(getEmpNm().charAt(0)));
+    }
+
     /**
      * 아이콘 - img_icon
      * @return
@@ -112,4 +122,17 @@ public class AssemBean {
      */
     public boolean getFavorite() { return this.favorite; }
     public void setFavorite( boolean favorite ){this.favorite = favorite; }
+
+    /**
+     * 한글 이름의 첫글자 초성 가져오기
+     * @return
+     */
+    public String getInitialEmpNm(){
+        return getInitial();
+    }
+    public void setInitialEmpNm(
+        String initial
+    ){
+        this.initial = initial;
+    }
 }
