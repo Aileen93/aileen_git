@@ -138,11 +138,8 @@ public class AssemblyListActivity extends MainActivity{
                     e.printStackTrace();
                 }finally {
                     Log.v("[Adapter에 전달]",": 모든 국회의원 정보를 조회 완료하였습니다.");
-                    // searchList = adapter.filter("", assemblyList);
+                    adapter.addItem(assemblyList);
                     adapter.notifyDataSetChanged();
-
-                    // 다시 호출할 수 있도록 false 처리
-                    // lastitemVisibleFlag = false;
                 }
             }
 

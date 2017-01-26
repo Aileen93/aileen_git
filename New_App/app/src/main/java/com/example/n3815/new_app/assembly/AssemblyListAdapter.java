@@ -303,6 +303,18 @@ public class AssemblyListAdapter extends BaseAdapter {
         return targetArray;
     }
 
+    // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
+    public void addItem(ArrayList<AssemBean> assemList) {
+
+        // 리스트를 보여주기 위한 정보 셋팅
+        /*ListViewItem item = new ListViewItem();
+        item.setIcon(icon);
+        item.setTitle(title);
+        item.setDesc(desc);*/
+
+        assemblyItemList.addAll(assemList);
+    }
+
     public class ViewHolder
     {
         TextView titleView;
