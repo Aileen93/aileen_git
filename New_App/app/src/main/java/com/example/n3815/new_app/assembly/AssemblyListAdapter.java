@@ -35,10 +35,9 @@ public class AssemblyListAdapter extends BaseAdapter {
 
     // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
     private ArrayList<AssemBean> assemblyItemList = new ArrayList<AssemBean>();
+    ArrayList<AssemBean> temp = new ArrayList<AssemBean>();
 
     public static boolean isSearch = false;
-
-    ArrayList<AssemBean> temp = new ArrayList<AssemBean>();
 
     public AssemblyListAdapter(){
     }
@@ -63,8 +62,12 @@ public class AssemblyListAdapter extends BaseAdapter {
 
     // 데이터 정렬을 위한 Comparator
     public static Comparator<AssemBean> cmpAsc = new Comparator<AssemBean>() {
+
         @Override
         public int compare(AssemBean o1, AssemBean o2) {
+
+            // 정렬 로직
+
             return o1.getEmpNm().compareTo(o2.getEmpNm()) ;
         }
     };

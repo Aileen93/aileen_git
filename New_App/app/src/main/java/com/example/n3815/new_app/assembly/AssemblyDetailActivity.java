@@ -77,8 +77,8 @@ public class AssemblyDetailActivity extends AssemblyListActivity {
 
         final AssemDetailBean assemInfo = new AssemDetailBean();
 
-        assemblyRestClient = new DefaultRestClient<>();
-        assemblyService = assemblyRestClient.getAssemblyClient(AssemblyService.class);
+        restClient = new DefaultRestClient<>();
+        assemblyService = restClient.getAssemblyClient(AssemblyService.class);
 
         Call<AssemDetailBean> call = assemblyService.getMemberDetailInfoList(numOfRows, pageNo, dep_cd, num);
         call.enqueue(new Callback<AssemDetailBean>() {

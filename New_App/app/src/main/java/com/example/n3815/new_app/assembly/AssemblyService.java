@@ -19,13 +19,15 @@ public interface AssemblyService {
      * 현재 국회의원 리스트를 조회하는 기능 제공
      *
      * @param pageNum -- 페이지 번호
+     * @param numOfRows -- 가져올 개수
      * @return
      */
     @GET("getMemberCurrStateList?serviceKey="+serviceKey)
     Call<Items> getMemberCurrStateList(
-            @Query("pageNo") int pageNum    // 가져올 페이지 수, 기본 10개씩 가져옵니다.
+            @Query("pageNo") int pageNum    // 페이지
+            , @Query("numOfRows") int numOfRows // 페이지당 가져올 개수
     );
-    // http://apis.data.go.kr/9710000/NationalAssemblyInfoService/getMemberCurrStateList?serviceKey=q1p5TosEhgURKtNouuTaxt4aOX0yu55kVUa%2FZIizv2tdjIG5WARFe7ET02PNGyPThekktyx12SZ9GBSjkwti8A%3D%3D&pageNo=4
+    // http://apis.data.go.kr/9710000/NationalAssemblyInfoService/getMemberCurrStateList?serviceKey=q1p5TosEhgURKtNouuTaxt4aOX0yu55kVUa%2FZIizv2tdjIG5WARFe7ET02PNGyPThekktyx12SZ9GBSjkwti8A%3D%3D&numOfrows=300
 
     /**
      * 국회의원의 상세 정보를 보여주는 기능 제공
