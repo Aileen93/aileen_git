@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.n3815.new_app.R;
+import com.example.n3815.new_app.common.SearchCommon;
 import com.example.n3815.new_app.common.bean.AssemBean;
 import com.squareup.picasso.Picasso;
 
@@ -30,17 +31,10 @@ import java.util.Locale;
 /**
  * Created by N3815 on 2016-12-28.
  */
-
 public class AssemblyListAdapter extends BaseAdapter {
+
     // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
     private ArrayList<AssemBean> assemblyItemList = new ArrayList<AssemBean>();
-
-    // 자음
-    private static final char[] INITIAL_SOUND = { 'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ' };
-
-    private static final char HANGUL_BEGIN_UNICODE = 44032; // 가
-    private static final char HANGUL_LAST_UNICODE = 55203; // 힣
-    private static final char HANGUL_BASE_UNIT = 588;//각자음 마다 가지는 글자수
 
     public static boolean isSearch = false;
 
@@ -90,7 +84,7 @@ public class AssemblyListAdapter extends BaseAdapter {
         View v = convertView;
 
         // getView에서 넘어오는 convertView는 이전에 그려졌던 view를 넘기는데요.
-        // 한번도 inflate되지 않은 view라면 null로 전달되는 경우가 있으니 반드시 null체크는 해야합니다.
+        // 한번도 inflate되지 않은 view라면 null로 전달되는 경우가 있으니 반드시 null체크
         if (v == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.activity_assem_item, parent, false);
@@ -156,6 +150,7 @@ public class AssemblyListAdapter extends BaseAdapter {
                     }else if(selectedAssem.getFavorite() == true){
                         Log.v("★[해제]★","======>>"+selectedAssem.getEmpNm());
 
+                        // view가 자동으로 dapter에 걸려있는 listArray를 관리해주나봄
                         selectedAssem.setFavorite(false);
                         for(AssemBean u : assemblyItemList){
                             Log.v("＊[해제]＊",":"+u.getEmpNm()+",("+u.getFavorite()+")");
@@ -172,13 +167,6 @@ public class AssemblyListAdapter extends BaseAdapter {
                             }
                             // 왜 한명은 빠지는거지 현재 배열의 정보가 정확하지 않는 현상확인하기
                         }
-
-                        // temp에 담긴 즐겨찾기 리스트 재정렬
-                        Collections.sort(temp, cmpAsc);
-                        for(AssemBean u : temp){
-                            Log.v("＃[즐겨찾기 정렬 중]＃",":"+u.getEmpNm()+",("+u.getFavorite()+")");
-                        }
-                        Collections.sort(assemblyItemList, cmpAsc);
 
                         // 맨 앞으로 이동
                         assemblyItemList.addAll(0, temp);
@@ -202,9 +190,10 @@ public class AssemblyListAdapter extends BaseAdapter {
 
             // 정당 색깔 구분
             viewHolder.colorView.setBackgroundColor(Color.rgb(128, 128, 128));
-            if (listViewItem.getEmpNm().contains("강")) {
+            /*if (listViewItem.getEmpNm().contains("강")) {
                 viewHolder.colorView.setBackgroundColor(Color.rgb(255, 0, 0));
-            }
+            }*/
+
             // 각 위젯에 데이터 반영
             Picasso.with(context).load(listViewItem.getJpgLink()).into(viewHolder.imgView);
             viewHolder.empNmView.setText(listViewItem.getEmpNm());
@@ -218,44 +207,37 @@ public class AssemblyListAdapter extends BaseAdapter {
                 c = position - 1;
             }
 
-            /* 이름 화면에 표시해주기 위한 로직 */
+            // 그룹 라벨을 위한 로직
             final AssemBean prevAssemInfo = assemblyItemList.get(c);
-            char a = getInitialSound(prevAssemInfo.getEmpNm().charAt(0));
-            char b = getInitialSound(listViewItem.getEmpNm().charAt(0));
 
-            boolean aCheck = prevAssemInfo.getFavorite();
-            boolean bCheck = listViewItem.getFavorite();
+            boolean prevCheck = prevAssemInfo.getFavorite();
+            char prevInitial = SearchCommon.getInitialSound(prevAssemInfo.getEmpNm().charAt(0));
 
-            // 즐겨찾기 ON
-            if(viewHolder.favoriteBtn.isChecked()){
-                if(position == 0){
+            boolean currCheck = listViewItem.getFavorite();
+            char currInitial = SearchCommon.getInitialSound(listViewItem.getEmpNm().charAt(0));
+
+            // 포지션이 0일 경우,
+            if(position == 0) {
+                if(currCheck) {
                     viewHolder.titleLayoutView.setVisibility(View.VISIBLE);
-                    viewHolder.titleView.setText("즐겨찾기");
-                }
-            // 즐겨찾기 OFF
-            }else{
-                // 검색하지 않았을 경우, ㄱ으로 고정
-                if(!isSearch){
-                    // 첫화면 로딩 때는 ㄱ으로 고정
-                    if(position == 0 && a == b) {
-                        viewHolder.titleLayoutView.setVisibility(View.VISIBLE);
-                        viewHolder.titleView.setText("ㄱ");
-
-                    // 즐겨찾기가 추가된 다음 인덱스부터도 ㄱ으로 고정
-                    }else if( aCheck == true && bCheck == false){
-                        Log.v("=============","==========라인추가============");
-                        Log.v("=============이전","클릭 여부:"+aCheck);
-                        Log.v("===========현재","클릭 여부:"+bCheck);
-                        viewHolder.titleLayoutView.setVisibility(View.VISIBLE);
-                        viewHolder.titleView.setText(String.valueOf(b));
-                    }else if( a!=b ){
-                        viewHolder.titleLayoutView.setVisibility(View.VISIBLE);
-                        viewHolder.titleView.setText(String.valueOf(b));
-                    }
-                // 검색했을 경우, 검색한 값으로 고정
+                    viewHolder.titleView.setText("즐겨찾기 그룹");
                 }else{
+                    // 그외 ㄱ으로 시작하는 사람들
                     viewHolder.titleLayoutView.setVisibility(View.VISIBLE);
-                    viewHolder.titleView.setText(String.valueOf(b));
+                    viewHolder.titleView.setText(String.valueOf(currInitial));
+                }
+
+            // 그외 포지션
+            }else{
+                // 1. 첫번째 ㄱ을 위해서
+                if( (prevCheck== true && currCheck == false)) {
+                    viewHolder.titleLayoutView.setVisibility(View.VISIBLE);
+                    viewHolder.titleView.setText(String.valueOf(currInitial)+" 그룹");
+
+                // 2. 이전 자음과 현재 자음이 다를 경우
+                }else if( prevInitial != currInitial &&  (prevCheck == false && currCheck == false)){
+                    viewHolder.titleLayoutView.setVisibility(View.VISIBLE);
+                    viewHolder.titleView.setText(String.valueOf(currInitial)+ " 그룹");
                 }
             }
         }
@@ -301,7 +283,6 @@ public class AssemblyListAdapter extends BaseAdapter {
 
         // 전체정렬
         Collections.sort(targetArray, cmpAsc);
-        Log.v("===========","========================================");
 
         // 즐겨찾기 골라서 맨위로
         ArrayList<AssemBean> temp = new ArrayList<AssemBean>();
@@ -317,78 +298,6 @@ public class AssemblyListAdapter extends BaseAdapter {
         notifyDataSetChanged();
 
         return targetArray;
-    }
-
-    /**
-     * 해당 문자의 자음을 얻는다.
-     *
-     * @param c 검사할 문자
-     * @return
-     */
-    private static char getInitialSound(char c) {
-        int hanBegin = (c - HANGUL_BEGIN_UNICODE);
-        int index = hanBegin / HANGUL_BASE_UNIT;
-        return INITIAL_SOUND[index];
-    }
-
-    /**
-     * 해당 문자가 INITIAL_SOUND인지 검사.
-     * @param searchar
-     * @return
-     */
-    private static boolean isInitialSound(char searchar){
-        for(char c:INITIAL_SOUND){
-            if(c == searchar){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 해당 문자가 한글인지 검사
-     * @param c 문자 하나
-     * @return
-     */
-    private static boolean isHangul(char c) {
-        return HANGUL_BEGIN_UNICODE <= c && c <= HANGUL_LAST_UNICODE;
-    }
-
-
-    /** * 검색을 한다. 초성 검색 완벽 지원함.
-     * @param value : 검색 대상 ex> 초성검색합니다
-     * @param search : 검색어 ex> ㅅ검ㅅ합ㄴ
-     * @return 매칭 되는거 찾으면 true 못찾으면 false. */
-    public static boolean matchString(String value, String search){
-
-        int t = 0;
-        int seof = value.length() - search.length();
-        int slen = search.length();
-        if(seof < 0)
-            return false; //검색어가 더 길면 false를 리턴한다.
-        for(int i = 0;i <= seof;i++){
-            t = 0;
-            while(t < slen){
-                if(isInitialSound(search.charAt(t))==true && isHangul(value.charAt(i+t))){
-                    //만약 현재 char이 초성이고 value가 한글이면
-                    if(getInitialSound(value.charAt(i+t))==search.charAt(t))
-                        //각각의 초성끼리 같은지 비교한다
-                        t++;
-                    else
-                        break;
-                } else {
-                    //char이 초성이 아니라면
-                    if(value.charAt(i+t)==search.charAt(t))
-                        //그냥 같은지 비교한다.
-                        t++;
-                    else
-                        break;
-                }
-            }
-            if(t == slen)
-                return true; //모두 일치한 결과를 찾으면 true를 리턴한다.
-        }
-        return false; //일치하는 것을 찾지 못했으면 false를 리턴한다.
     }
 
     public class ViewHolder

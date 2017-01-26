@@ -2,15 +2,11 @@ package com.example.n3815.new_app.assembly;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.example.n3815.new_app.R;
 import com.example.n3815.new_app.common.DefaultRestClient;
-import com.example.n3815.new_app.common.SearchService;
-import com.example.n3815.new_app.common.bean.AssemDetailBean;
-import com.example.n3815.new_app.common.bean.BlogInfo;
+import com.example.n3815.new_app.common.SearchAPIService;
 import com.example.n3815.new_app.common.bean.NaverSearch;
 
 import retrofit2.Call;
@@ -23,8 +19,8 @@ import retrofit2.Response;
 
 public class AssemblySearchActivity extends AssemblyDetailActivity{
 
-    DefaultRestClient<SearchService> searchClient;  // restAPI
-    SearchService searchService;    // Url service
+    DefaultRestClient<SearchAPIService> searchClient;  // restAPI
+    SearchAPIService searchAPIService;    // Url service
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,9 +43,9 @@ public class AssemblySearchActivity extends AssemblyDetailActivity{
         String searchKey
     ){
         searchClient = new DefaultRestClient<>();
-        searchService = searchClient.getSearchBlogAPIClient(SearchService.class);
+        searchAPIService = searchClient.getSearchBlogAPIClient(SearchAPIService.class);
 
-        Call<NaverSearch> call = searchService.searchBlogAPI("123");
+        Call<NaverSearch> call = searchAPIService.searchBlogAPI("123");
         call.enqueue(new Callback<NaverSearch>() {
             @Override
             public void onResponse(Call<NaverSearch> call, Response<NaverSearch> response) {

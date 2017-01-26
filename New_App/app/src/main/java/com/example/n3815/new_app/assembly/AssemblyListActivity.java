@@ -108,25 +108,6 @@ public class AssemblyListActivity extends MainActivity{
                 // 입력하기 전에
             }
         });
-
-        /* Error 납니다. 왜죠? Null 이라는데, 해당 버튼이 없어서 그런가.
-
-        CheckBox favoriteBtn = (CheckBox) findViewById(R.id.favorite);
-        favoriteBtn.setOnClickListener(new CheckBox.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               SparseBooleanArray checkedItems = listview.getCheckedItemPositions();
-               int count = adapter.getCount() ;
-
-               for (int i = count-1; i >= 0; i--) {
-                   if (checkedItems.get(i)) {
-                       Log.v("===mainActivity===",""+checkedItems.get(i));
-                   }
-               }
-               // 모든 선택 상태 초기화.
-               listview.clearChoices() ;
-           }
-        });*/
     }
 
     /**
