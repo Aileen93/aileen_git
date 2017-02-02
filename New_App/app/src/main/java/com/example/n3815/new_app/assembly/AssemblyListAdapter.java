@@ -2,31 +2,21 @@ package com.example.n3815.new_app.assembly;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.n3815.new_app.R;
-import com.example.n3815.new_app.common.SearchCommon;
 import com.example.n3815.new_app.common.bean.AssemBean;
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by N3815 on 2016-12-28.
@@ -35,9 +25,7 @@ public class AssemblyListAdapter extends BaseAdapter {
 
     // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
     private ArrayList<AssemBean> assemblyItemList = new ArrayList<AssemBean>();
-    ArrayList<AssemBean> temp = new ArrayList<AssemBean>();
-
-    public static boolean isSearch = false;
+    private ArrayList<AssemBean> temp = new ArrayList<AssemBean>();
 
     public AssemblyListAdapter(){
     }
@@ -59,18 +47,6 @@ public class AssemblyListAdapter extends BaseAdapter {
     public Object getItem(int position) {
         return assemblyItemList.get(position) ;
     }
-
-    // 데이터 정렬을 위한 Comparator
-    public static Comparator<AssemBean> cmpAsc = new Comparator<AssemBean>() {
-
-        @Override
-        public int compare(AssemBean o1, AssemBean o2) {
-
-            // 정렬 로직
-
-            return o1.getEmpNm().compareTo(o2.getEmpNm()) ;
-        }
-    };
 
     /**
      * 어뎁터의 뷰를 구현하는 함수
@@ -103,7 +79,7 @@ public class AssemblyListAdapter extends BaseAdapter {
             viewHolder.titleView = (TextView) v.findViewById(R.id.title);
             v.setTag(viewHolder);
 
-            // 즐겨찾기 버튼 클릭시
+            // 기능1) 즐겨찾기
             viewHolder.favoriteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -113,69 +89,24 @@ public class AssemblyListAdapter extends BaseAdapter {
 
                     // 아이템을 클릭했을 경우,
                     if (selectedAssem.getFavorite() == false && selectedBtn.isChecked()){
-                        Log.v("★[추가]★","======>>"+selectedAssem.getEmpNm());
 
                         // 객체의 정보를 true로 설정 - 자동으로 Array 배열의 값이 변경
                         selectedAssem.setFavorite(true);
-                        for(AssemBean u : assemblyItemList){
-                            Log.v("＊[전체]＊",":"+u.getEmpNm()+",("+u.getFavorite()+")");// assemblyItemList에 담긴 값이 즐겨찾기가 true일 경우
-                        }
 
-                        temp.clear();
-                        for(int k=0;k <assemblyItemList.size(); k++){
-                            if(assemblyItemList.get(k).getFavorite()){
-                                Log.v("＊[temp에 add]＊","======>>"+assemblyItemList.get(k).getEmpNm());
-                                temp.add(assemblyItemList.get(k));  // 해당 객체 insert
-                                assemblyItemList.remove(assemblyItemList.get(k));
-                                // 해당 객체 delete 할때 해당 객체가 불안정적으로 구동됨 인덱스가 변화되면서 Error
-                            }else{
-                                Log.v("＊[X그외X]＊","==>>"+assemblyItemList.get(k).getEmpNm());
-                            }
-                        }
+                        // 변경된 정보값을 다시 원본 배열에게 알리기
+                        ((AssemblyListActivity) context).changeItemInfo(selectedAssem);
 
-                        // temp에 담긴 즐겨찾기 리스트 재정렬
-                        Collections.sort(temp, cmpAsc);
-                        for(AssemBean u : temp){
-                            Log.v("＃[즐겨찾기 정렬 중]＃",":"+u.getEmpNm()+",("+u.getFavorite()+")");
-                        }
-
-                        // 맨 앞으로 이동
-                        assemblyItemList.addAll(0, temp);
-                        Log.v("===========","======================================>>>>>>"+assemblyItemList.size());
-                        // assemblyItemList를 모두 찍어보기
-                        for(AssemBean u : assemblyItemList){
-                            Log.v("＃[결과]＃",":"+u.getEmpNm()+",("+u.getFavorite()+")");
-                        }
-
-                        notifyDataSetChanged();
-                        Toast.makeText(context,"즐겨찾기가 등록 되었습니다.",Toast.LENGTH_LONG).show();
+                        Toast.makeText(context,"즐겨찾기가 등록 되었습니다!",Toast.LENGTH_LONG).show();
 
                     }else if(selectedAssem.getFavorite() == true){
-                        Log.v("★[해제]★","======>>"+selectedAssem.getEmpNm());
 
-                        // view가 자동으로 dapter에 걸려있는 listArray를 관리해주나봄
+                        // 객체의 정보를 true로 설정 - 자동으로 Array 배열의 값이 변경
                         selectedAssem.setFavorite(false);
-                        for(AssemBean u : assemblyItemList){
-                            Log.v("＊[해제]＊",":"+u.getEmpNm()+",("+u.getFavorite()+")");
-                        }
 
-                        // assemblyItemList를 모두 찍어보기
-                        temp.clear();
-                        for(int k=0;k <assemblyItemList.size(); k++){
-                            if(assemblyItemList.get(k).getFavorite()){
-                                Log.v("＊[temp에 add]＊","======>>"+assemblyItemList.get(k).getEmpNm());
-                                temp.add(assemblyItemList.get(k));  // 해당 객체 insert
-                                assemblyItemList.remove(assemblyItemList.get(k));
-                                // 해당 객체 delete 할때 해당 객체가 불안정적으로 구동됨 인덱스가 변화되면서 Error
-                            }
-                            // 왜 한명은 빠지는거지 현재 배열의 정보가 정확하지 않는 현상확인하기
-                        }
+                        // 변경된 정보값을 다시 원본 배열에게 알리기
+                        ((AssemblyListActivity) context).changeItemInfo(selectedAssem);
 
-                        // 맨 앞으로 이동
-                        assemblyItemList.addAll(0, temp);
-
-                        notifyDataSetChanged();
-                        Toast.makeText(context,"즐겨찾기가 해제 되었습니다.",Toast.LENGTH_LONG).show();
+                        Toast.makeText(context,"즐겨찾기가 해제 되었습니다!",Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -193,9 +124,6 @@ public class AssemblyListAdapter extends BaseAdapter {
 
             // 정당 색깔 구분
             viewHolder.colorView.setBackgroundColor(Color.rgb(128, 128, 128));
-            /*if (listViewItem.getEmpNm().contains("강")) {
-                viewHolder.colorView.setBackgroundColor(Color.rgb(255, 0, 0));
-            }*/
 
             // 각 위젯에 데이터 반영
             Picasso.with(context).load(listViewItem.getJpgLink()).into(viewHolder.imgView);
@@ -214,10 +142,10 @@ public class AssemblyListAdapter extends BaseAdapter {
             final AssemBean prevAssemInfo = assemblyItemList.get(c);
 
             boolean prevCheck = prevAssemInfo.getFavorite();
-            char prevInitial = SearchCommon.getInitialSound(prevAssemInfo.getEmpNm().charAt(0));
+            char prevInitial = prevAssemInfo.getInitialEmpNm();
 
             boolean currCheck = listViewItem.getFavorite();
-            char currInitial = SearchCommon.getInitialSound(listViewItem.getEmpNm().charAt(0));
+            char currInitial = listViewItem.getInitialEmpNm();
 
             // 포지션이 0일 경우,
             if(position == 0) {
@@ -249,72 +177,28 @@ public class AssemblyListAdapter extends BaseAdapter {
     }
 
     /**
-     * 검색 기능
-     * @param charText  -- 검색어
-     * @param assemList -- 국회의원 리스트
+     * 아이템 추가하기
+     * @param result -- 추가할 아이템
      */
-    public ArrayList<AssemBean> filter(String charText, ArrayList<AssemBean> assemList) {
-        charText = charText.toLowerCase(Locale.getDefault());
+    public void addItem(ArrayList<AssemBean> result) {
         assemblyItemList.clear();   // 어뎁터 뷰에 연결된 배열 초기화
 
-        Log.v("＊＊＊","전체 대상자 :"+assemList.size()+", (검색어 :"+charText+")＊＊＊");
-
-        if (charText.length() == 0) {
-            // 검색된 글자가 하나도 없을 경우, 전체 리스트를 넣어주기
-            assemblyItemList.addAll(assemList);
-            isSearch = false;
-        } else {
-            // 검색된 글자가 있을 경우, 검색어와 일치하는 국회의원 정보를 담아주기
-            for(AssemBean u : assemList){
-                String name = u.getEmpNm();  // 국회의원 이름
-                if (name.toLowerCase().contains(charText)) {
-                    Log.v("＊[확인]＊","일치하는 국회의원 :"+name);
-                    assemblyItemList.add(u);
-                }
-            }
-            isSearch = true;
+        temp.clear();
+        for(AssemBean u : result){
+           if(u.getFavorite()){
+               temp.add(u);
+           }else{
+               assemblyItemList.add(u);
+           }
         }
 
-        return orderByAssemList(assemblyItemList);
+        assemblyItemList.addAll(0, temp);
+        notifyDataSetChanged();
     }
 
     /**
-     * 대상 배열을 재정렬해줍니다.
-     * @param targetArray
+     * viewHolder
      */
-    public ArrayList<AssemBean> orderByAssemList(ArrayList<AssemBean> targetArray){
-
-        // 전체정렬
-        Collections.sort(targetArray, cmpAsc);
-
-        // 즐겨찾기 골라서 맨위로
-        ArrayList<AssemBean> temp = new ArrayList<AssemBean>();
-        for(int j = 0; j < targetArray.size(); j++){
-            if(targetArray.get(j).getFavorite() == true){
-                temp.add(targetArray.get(j));
-                targetArray.remove(j);
-            }
-        }
-        Collections.sort(temp, cmpAsc);
-        targetArray.addAll(0, temp);
-
-        notifyDataSetChanged();
-
-        return targetArray;
-    }
-
-    // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
-    public void addItem(ArrayList<AssemBean> assemList) {
-
-        // 리스트를 보여주기 위한 정보 셋팅
-        /*ListViewItem item = new ListViewItem();
-        item.setIcon(icon);
-        item.setTitle(title);
-        item.setDesc(desc);*/
-
-        assemblyItemList.addAll(assemList);
-    }
-
     public class ViewHolder
     {
         TextView titleView;

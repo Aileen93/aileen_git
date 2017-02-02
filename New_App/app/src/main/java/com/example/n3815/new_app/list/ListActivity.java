@@ -7,7 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.example.n3815.new_app.MainActivity;
+import com.example.n3815.new_app.LoadingActivity;
 import com.example.n3815.new_app.R;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Created by N3815 on 2016-12-08.
  */
 
-public class ListActivity extends MainActivity {
+public class ListActivity extends LoadingActivity {
 
     private ArrayAdapter adapter;
 

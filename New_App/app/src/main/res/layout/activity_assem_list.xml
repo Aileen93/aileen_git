@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <EditText
         android:layout_width="match_parent"
@@ -10,7 +12,7 @@
         android:hint="국회의원 이름을 써주세요."
         android:text=""
         android:ems="10"
-        android:id="@+id/searchValue" />
+        android:id="@+id/searchValue"/>
 
     <ListView
         android:id="@+id/assembly_listView"

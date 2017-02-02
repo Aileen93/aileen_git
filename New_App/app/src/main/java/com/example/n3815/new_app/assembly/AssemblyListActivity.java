@@ -1,5 +1,6 @@
 package com.example.n3815.new_app.assembly;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,45 +10,45 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.example.n3815.new_app.MainActivity;
 import com.example.n3815.new_app.R;
 import com.example.n3815.new_app.common.DefaultRestClient;
 import com.example.n3815.new_app.common.bean.AssemBean;
-import com.example.n3815.new_app.common.bean.Items;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 /**
+ * LoadingActivity 호출 후에 실행되는 MainActivity입니다.
  * Created by N3815 on 2016-12-19.
  */
-public class AssemblyListActivity extends MainActivity{
+public class AssemblyListActivity extends Activity {
 
     ListView listview; // listView 객체
-    AssemblyListAdapter adapter; // 아이템의 상세 정보를 셋팅해줄 Adapter
-    ArrayList<AssemBean> assemblyList = new ArrayList<AssemBean>(); // 전체 국회의원의 정보를 담는 객체
-
     EditText search; // 국회의원 검색을 하기 위한 Text 객체
+    AssemblyListAdapter adapter; // 아이템의 상세 정보를 셋팅해줄 Adapter
+
+    public static boolean isSearch = false;
+
+    private ArrayList<AssemBean> assemblyList = new ArrayList<AssemBean>(); // 전체 국회의원의 정보를 담는 객체
     private ArrayList<AssemBean> searchList = new ArrayList<AssemBean>(); // 검색된 국회의원 리스트
+
+    private ArrayList<AssemBean> temp = new ArrayList<AssemBean>();
 
     // API 호출을 위한 Client
     DefaultRestClient<AssemblyService> restClient;
     // 국회의원 REST API URL SERVICE
     AssemblyService assemblyService;
 
-    boolean lastitemVisibleFlag = false;	//화면에 리스트의 마지막 아이템이 보여지는지 체크
-
-
-    // 로딩화면에서 미리 호출해주기
-
-    // 300개가 완료되면 onCreate 호출
+    // 데이터 정렬을 위한 Comparator
+    public static Comparator<AssemBean> cmpAsc = new Comparator<AssemBean>() {
+        @Override
+        public int compare(AssemBean o1, AssemBean o2) {
+            return o1.getEmpNm().compareTo(o2.getEmpNm()) ;
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,12 +65,12 @@ public class AssemblyListActivity extends MainActivity{
         // 해당 어뎁터 설정
         listview.setAdapter(adapter);
 
-        // 전체 국회의원 리스트 가져오기
-        try {
-            AssemblyList();
-        } catch (IOException e) {
-            // 다시 onCreate 호출하도록 수정
-            e.printStackTrace();
+        // intent 받아온 Array 정보 가져오기
+        ArrayList<AssemBean> ch = (ArrayList<AssemBean>) getIntent().getSerializableExtra("assem");
+        if(ch != null && assemblyList.size() != 300) {
+            assemblyList.addAll(ch);
+            searchList.addAll(ch);
+            adapter.addItem(assemblyList);
         }
 
         // 기능1) 아이템 클릭시 상세 화면 호출하기
@@ -79,6 +80,7 @@ public class AssemblyListActivity extends MainActivity{
                 view.setFocusable(false);
 
                 Intent intent = new Intent(AssemblyListActivity.this, AssemblyDetailActivity.class);
+                Log.v("[AssemblyListActivity]","====== 상세화면 이동 :"+searchList.get(position).getDeptCd());
                 intent.putExtra("numOfRows",20); // 한페이지 결과수
                 intent.putExtra("dept_cd",searchList.get(position).getDeptCd()); // 부서코드
                 intent.putExtra("num",searchList.get(position).getNum()); // 국회의원 번호
@@ -95,8 +97,29 @@ public class AssemblyListActivity extends MainActivity{
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // 입력되는 텍스트에 변화가 있을 때
                 String text = s.toString().toLowerCase(Locale.getDefault());
-                // 어뎁터에 전달
-                searchList = adapter.filter(text, assemblyList);
+
+                // 검색결과 초기화
+                searchList.clear();
+                Log.v("[AssemblyListActivity]","[검색시작] 전체 대상자 :"+assemblyList.size()+", (검색어 :"+text+")＊＊＊");
+
+                if (text.length() == 0) {
+                    // 검색된 글자가 하나도 없을 경우, 전체 리스트를 넣어주기
+                    searchList.addAll(assemblyList);
+                    isSearch = false;
+                } else {
+                    // 검색된 글자가 있을 경우, 검색어와 일치하는 국회의원 정보를 담아주기
+                    for(AssemBean u : assemblyList){
+                        String name = u.getEmpNm();  // 국회의원 이름
+                        if (name.toLowerCase().contains(text)) {
+                            Log.v("[AssemblyListActivity]","[검색결과] : "+name);
+                            searchList.add(u);
+                        }
+                    }
+                    isSearch = true;
+                }
+
+                // searchList에 담아준뒤, 어뎁터에 전달
+                adapter.addItem(searchList);
             }
             @Override
             public void afterTextChanged(Editable arg0) {
@@ -110,44 +133,40 @@ public class AssemblyListActivity extends MainActivity{
     }
 
     /**
-     * 국회의원 목록 가져오기 I/F
+     * 대상 배열을 재정렬해줍니다.
+     * @param targetArray   -- 정렬할 배열
      */
-    public void AssemblyList(
-    ) throws IOException {
+    public void orderByAssemList(ArrayList<AssemBean> targetArray){
 
-        restClient = new DefaultRestClient<>();
-        assemblyService = restClient.getAssemblyClient(AssemblyService.class);
+        // 전체 정렬
+        Collections.sort(targetArray, cmpAsc);
 
-        // 아이템을 추가하는 동안 중복 요청을 방지하기 위해 락을 걸어둡니다.
-        // lastitemVisibleFlag = true;
-        // setPage(page);  // 페이지 설정 - 페이징에 따른 호출 시, 사용하기 위해서
+        // Adapter에 전달
+        adapter.addItem(targetArray);
+    }
 
-        Call<Items> call = assemblyService.getMemberCurrStateList(1, 300);
-        call.enqueue(new Callback<Items>() {
-            @Override
-            public void onResponse(Call<Items> call, Response<Items> response) {
-                try{
-                    if(response.isSuccessful()){
-                        // 전체 대상자 추가하기
-                        for(AssemBean userInfo : response.body().getItems()){
-                            assemblyList.add(userInfo);
-                        }
-                        Log.v("[API 호출 성공]",":"+assemblyList.size());
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }finally {
-                    Log.v("[Adapter에 전달]",": 모든 국회의원 정보를 조회 완료하였습니다.");
-                    adapter.addItem(assemblyList);
-                    adapter.notifyDataSetChanged();
-                }
+    /**
+     * Adapter에서 변경된 국회의원 정보를 갱신해준다.
+     * @param newAssemInfo -- 변경된 새로운 국회의원 정보
+     */
+    public void changeItemInfo(AssemBean newAssemInfo){
+        Log.v("[AssemblyListActivity]","[changeItemInfo] newAssemInfo :"+newAssemInfo.getEmpNm());
+
+        // 전체 검색 배열에 적용
+        for(AssemBean u : assemblyList){
+            if(u.getDeptCd().equals(newAssemInfo.getDeptCd())){
+                u.setFavorite(newAssemInfo.getFavorite());
             }
+        }
 
-            @Override
-            public void onFailure(Call<Items> call, Throwable throwable) {
-                Toast.makeText(AssemblyListActivity.this ,"Error",Toast.LENGTH_LONG).show();
-                // throwable.printStackTrace();
+        // 검색 결과 배열에 적용
+        for(AssemBean u : searchList){
+            if(u.getDeptCd().equals(newAssemInfo.getDeptCd())){
+                u.setFavorite(newAssemInfo.getFavorite());
             }
-        });
+        }
+
+        // searchList에 담아준뒤, 어뎁터에 전달
+        orderByAssemList(searchList);
     }
 }

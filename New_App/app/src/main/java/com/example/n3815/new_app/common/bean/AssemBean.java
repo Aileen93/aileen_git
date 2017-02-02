@@ -7,12 +7,14 @@ import com.example.n3815.new_app.common.SearchCommon;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
+import java.io.Serializable;
+
 /**
  * Created by N3815 on 2016-12-27.
  * 국회의원 기본 정보 pojo 객체
  */
 @Root(name = "item")
-public class AssemBean {
+public class AssemBean implements Serializable{
 
     @Element(name = "deptCd", required = false)
     private String deptCd;  // 부서코드
@@ -42,7 +44,7 @@ public class AssemBean {
 
     private boolean favorite = false; // 즐겨찾기 등록여부
 
-    private String initial; // 이름의 첫글자 초성
+    private char initial; // 이름의 첫글자 초성
 
     public String getDeptCd(){
         return this.deptCd;
@@ -101,8 +103,8 @@ public class AssemBean {
     }
 
     // 초성 가져오기
-    public String getInitial(){
-        return String.valueOf(SearchCommon.getInitialSound(getEmpNm().charAt(0)));
+    public char getInitial(){
+        return SearchCommon.getInitialSound(getEmpNm().charAt(0));
     }
 
     /**
@@ -124,14 +126,14 @@ public class AssemBean {
     public void setFavorite( boolean favorite ){this.favorite = favorite; }
 
     /**
-     * 한글 이름의 첫글자 초성 가져오기
+     * 한글 이름의 첫글자 초성
      * @return
      */
-    public String getInitialEmpNm(){
+    public char getInitialEmpNm(){
         return getInitial();
     }
     public void setInitialEmpNm(
-        String initial
+            char initial
     ){
         this.initial = initial;
     }

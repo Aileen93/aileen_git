@@ -40,8 +40,13 @@ public class AssemblyDetailActivity extends AssemblyListActivity {
         String dep_cd = intent.getStringExtra("dept_cd");
         String num = intent.getStringExtra("num");
         String jpgLink = intent.getStringExtra("jpgLink");
-
         final String empNm = intent.getStringExtra("empNm");
+        Log.v("[AssemblyDetailActivity]","numOfRows :"+numOfRows);
+        Log.v("[AssemblyDetailActivity]","pageNo :"+pageNo);
+        Log.v("[AssemblyDetailActivity]","dep_cd :"+dep_cd);
+        Log.v("[AssemblyDetailActivity]","num :"+num);
+        Log.v("[AssemblyDetailActivity]","jpgLink :"+jpgLink);
+        Log.v("[AssemblyDetailActivity]","empNm :"+empNm);
 
         try {
             // 상세정보 가져오기

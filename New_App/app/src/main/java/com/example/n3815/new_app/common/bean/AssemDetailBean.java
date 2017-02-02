@@ -3,11 +3,13 @@ package com.example.n3815.new_app.common.bean;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
+import java.io.Serializable;
+
 /**
  * Created by N3815 on 2017-01-04.
  */
 @Root(name = "item")
-public class AssemDetailBean {
+public class AssemDetailBean implements Serializable {
 
     @Element(name="header", required = false)
     private String header;

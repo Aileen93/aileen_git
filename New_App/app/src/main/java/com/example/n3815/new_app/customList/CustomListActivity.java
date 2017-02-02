@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.example.n3815.new_app.MainActivity;
+import com.example.n3815.new_app.LoadingActivity;
 import com.example.n3815.new_app.R;
 import com.example.n3815.new_app.common.bean.CustomItem;
 
@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * Created by N3815 on 2016-12-12.
  */
 // mipmap - img-text.png, img_x.png 민둥아 img-text도 drawable에들어가면되지 네네네네
-public class CustomListActivity extends MainActivity {
+public class CustomListActivity extends LoadingActivity {
 
     ListView listview;
     CustomAdapter adapter;
